@@ -1,21 +1,13 @@
-/**
-* Read a card using a mfrc522 reader on your SPI interface
-* Pin layout should be as follows (on Arduino Uno):
-* MOSI: Pin 11 / ICSP-4
-* MISO: Pin 12 / ICSP-1
-* SCK: Pin 13 / ISCP-3
-* SS: Pin 10
-* RST: Pin 9
-*
-* Script is based on the script of Miguel Balboa. 
-* New cardnumber is printed when card has changed. Only a dot is printed
-* if card is the same.
-*
-* @version 0.1
-* @author Henri de Jong
-* @since 06-01-2013
-*/
-
+/*******************************************************************************
+ * Project  : RFID KeyLock                                                     *
+ * Compiler : Arduino 1.0.2                                                    *
+ * Board    : Arduino NANO                                                     *
+ * Module   : RFID Module(RC522)                                               *
+ *          : LCD5110 Module                                                   *
+ * Author   : Bavensky :3                                                      *
+ * E-Mail   : Aphirak_Sang-ngenchai@hotmail.com                                *
+ * Date     : 25/03/2014 [dd/mm/yyyy]                                          *
+ *******************************************************************************/
 #include <SPI.h>
 #include <RFID.h>
 #include <LCD5110_Basic.h>
@@ -24,7 +16,15 @@
 LCD5110 myGLCD(2,3,4,5,6);
 RFID rfid(SS_PIN, RST_PIN); 
 extern uint8_t SmallFont[];
-// Setup variables:
+extern uint8_t MediumNumbers[];
+extern uint8_t BigNumbers[];
+extern uint8_t logo[];
+extern uint8_t welcome[];
+extern uint8_t error[];
+extern uint8_t view[];
+extern uint8_t view2[];
+extern uint8_t module[];
+    int sum=0,i=0;
     int serNum0;
     int serNum1;
     int serNum2;
@@ -38,14 +38,45 @@ void setup()
   rfid.init();
   myGLCD.InitLCD();
   myGLCD.setFont(SmallFont);
+  //myGLCD.drawBitmap(0, 0, logo, 84, 48);delay(2000);
+  //myGLCD.drawBitmap(0, 0, module, 84, 48);delay(2000);
   pinMode(A0, OUTPUT);
-  myGLCD.print("Welcome", LEFT, 0);delay(2000);
 }
 
 void loop()
-{  
-    if (rfid.isCard()) 
+{ 
+ i=1;
+  while(i==1)
+  {  
+    for(int m=0;m<50;m++){
+    check(); 
+    myGLCD.drawBitmap(0, 0, view, 84, 48);
+    delay(10);
+    i=2;  
+  }}
+  while(i==2)
+  {
+    for(int m=0;m<50;m++){
+    check();   
+    myGLCD.drawBitmap(0, 0, view2, 84, 48);
+    delay(10);
+    i=3;
+  }}
+  while(i==3)
+  {
+    for(int m=0;m<50;m++){
+    check();   
+    myGLCD.drawBitmap(0, 0, logo, 84, 48);
+    delay(10);
+    i=0;
+  }}
+}
+
+void check()
+{
+  if (rfid.isCard()) 
     {
+      sum=0;serNum0=0;serNum1=0;serNum2=0;serNum3=0;serNum4=0;
       if (rfid.readCardSerial()) 
       {
         if (rfid.serNum[0] != serNum0
@@ -59,19 +90,22 @@ void loop()
            serNum2 = rfid.serNum[2];
            serNum3 = rfid.serNum[3];
            serNum4 = rfid.serNum[4];
-         int i=serNum0+serNum1+serNum2+serNum3+serNum4;
-         if(i==830)
+         sum = serNum0+serNum1+serNum2+serNum3+serNum4;
+         if(sum==830)
          {
            digitalWrite(A0, HIGH);
-           myGLCD.clrScr();myGLCD.print("OPEN", LEFT, 0);} 
-         else
+           myGLCD.drawBitmap(0, 0, welcome, 84, 48);delay(3000);myGLCD.clrScr();
+         } 
+         if(sum!=830)
          {
            digitalWrite(A0, LOW); 
-           myGLCD.clrScr();myGLCD.print("error", LEFT, 0);
-         } 
+           myGLCD.drawBitmap(0, 0, error, 84, 48);delay(3000);myGLCD.clrScr();
+         }
         } 
       }   
     rfid.halt();
     }
+    i=0;
 }
+
 
