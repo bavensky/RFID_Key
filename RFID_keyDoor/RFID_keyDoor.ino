@@ -38,8 +38,8 @@ void setup()
   rfid.init();
   myGLCD.InitLCD();
   myGLCD.setFont(SmallFont);
-  //myGLCD.drawBitmap(0, 0, logo, 84, 48);delay(2000);
-  //myGLCD.drawBitmap(0, 0, module, 84, 48);delay(2000);
+  myGLCD.drawBitmap(0, 0, logo, 84, 48);delay(2000);
+  myGLCD.drawBitmap(0, 0, module, 84, 48);delay(2000);
   pinMode(A0, OUTPUT);
 }
 
@@ -91,15 +91,39 @@ void check()
            serNum3 = rfid.serNum[3];
            serNum4 = rfid.serNum[4];
          sum = serNum0+serNum1+serNum2+serNum3+serNum4;
+         
          if(sum==830)
          {
            digitalWrite(A0, HIGH);
-           myGLCD.drawBitmap(0, 0, welcome, 84, 48);delay(3000);myGLCD.clrScr();
+           myGLCD.drawBitmap(0, 0, welcome, 84, 48);delay(2000);myGLCD.clrScr();
+           
+           myGLCD.setFont(SmallFont);
+           myGLCD.print("WELCOME !", LEFT, 0);
+           myGLCD.print("Takan tanti :)", LEFT, 16);
+           myGLCD.print("ID: ", LEFT, 32);
+           
+           myGLCD.setFont(SmallFont);
+           myGLCD.print("17917923616472", LEFT, 40);
+
+           delay(5000);
+           myGLCD.clrScr();
          } 
          if(sum!=830)
          {
            digitalWrite(A0, LOW); 
-           myGLCD.drawBitmap(0, 0, error, 84, 48);delay(3000);myGLCD.clrScr();
+           myGLCD.drawBitmap(0, 0, error, 84, 48);delay(2000);myGLCD.clrScr();
+           
+           myGLCD.setFont(SmallFont);
+           myGLCD.print("ERROR !", LEFT, 0);
+           myGLCD.print("Who are you ? :)", LEFT, 8);
+           myGLCD.print(" Try again >>", LEFT, 16);
+           myGLCD.print("ID: ", LEFT, 32);
+           
+           myGLCD.setFont(SmallFont);
+           myGLCD.print("11626205112211", LEFT, 40);
+
+           delay(5000);
+           myGLCD.clrScr();
          }
         } 
       }   
