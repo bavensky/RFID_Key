@@ -14,6 +14,7 @@
 #define SS_PIN 10
 #define RST_PIN 9
 LCD5110 myGLCD(2,3,4,5,6);
+
 RFID rfid(SS_PIN, RST_PIN); 
 extern uint8_t SmallFont[];
 extern uint8_t MediumNumbers[];
@@ -24,12 +25,9 @@ extern uint8_t error[];
 extern uint8_t view[];
 extern uint8_t view2[];
 extern uint8_t module[];
-    int sum=0,i=0;
-    int serNum0;
-    int serNum1;
-    int serNum2;
-    int serNum3;
-    int serNum4;
+           
+    int sum=0,i=0,serNum0,serNum1,serNum2,serNum3,serNum4;
+    String str[4];
 
 void setup()
 { 
@@ -90,8 +88,13 @@ void check()
            serNum2 = rfid.serNum[2];
            serNum3 = rfid.serNum[3];
            serNum4 = rfid.serNum[4];
-         sum = serNum0+serNum1+serNum2+serNum3+serNum4;
-         
+           sum = serNum0+serNum1+serNum2+serNum3+serNum4;
+
+  str[0] = String(serNum0);   str[1] = String(serNum1);
+  str[2] = String(serNum2);   str[3] = String(serNum3);
+  str[4] = String(serNum4);
+  String string = str[0]+str[1]+str[2]+str[3]+str[4];
+  
          if(sum==830)
          {
            digitalWrite(A0, HIGH);
@@ -103,8 +106,7 @@ void check()
            myGLCD.print("ID: ", LEFT, 32);
            
            myGLCD.setFont(SmallFont);
-           myGLCD.print("17917923616472", LEFT, 40);
-
+           myGLCD.print(string, LEFT, 40);
            delay(5000);
            myGLCD.clrScr();
          } 
@@ -120,7 +122,7 @@ void check()
            myGLCD.print("ID: ", LEFT, 32);
            
            myGLCD.setFont(SmallFont);
-           myGLCD.print("11626205112211", LEFT, 40);
+           myGLCD.print(string, LEFT, 40);
 
            delay(5000);
            myGLCD.clrScr();
