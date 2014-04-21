@@ -89,10 +89,12 @@ void check()
            serNum3 = rfid.serNum[3];
            serNum4 = rfid.serNum[4];
            sum = serNum0+serNum1+serNum2+serNum3+serNum4;
-
+           
+/*** Convert int to stringarray ***/
   str[0] = String(serNum0);   str[1] = String(serNum1);
   str[2] = String(serNum2);   str[3] = String(serNum3);
   str[4] = String(serNum4);
+/*** stringarray to string ***/  
   String string = str[0]+str[1]+str[2]+str[3]+str[4];
   
          if(sum==830)
